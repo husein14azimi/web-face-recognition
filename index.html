@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Webcam Background Blur with MediaPipe</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>Webcam Background Blur</h1>
+      <p class="subtitle">Powered by Google MediaPipe Image Segmenter &amp; WebAssembly</p>
+    </header>
+
+    <main class="main-content">
+      <div class="video-card">
+        <div class="canvas-wrapper" id="canvas-wrapper">
+          <!-- Hidden video element capturing the stream -->
+          <video id="webcam" playsinline muted autoplay></video>
+          <!-- Canvas rendering the blurred background composite -->
+          <canvas id="output-canvas"></canvas>
+
+          <div id="status-overlay" class="status-overlay">
+            <div class="spinner" id="loading-spinner"></div>
+            <p id="status-message">Initializing MediaPipe Image Segmenter...</p>
+          </div>
+        </div>
+
+        <div class="controls-panel">
+          <div class="btn-group">
+            <button id="toggle-camera-btn" class="btn btn-primary" disabled>
+              <span class="icon">📷</span> <span id="toggle-camera-text">Start Camera</span>
+            </button>
+            <button id="toggle-blur-btn" class="btn btn-secondary" disabled>
+              <span class="icon">✨</span> <span id="toggle-blur-text">Disable Blur</span>
+            </button>
+          </div>
+
+          <div class="slider-control">
+            <label for="blur-range">
+              <span>Blur Radius:</span>
+              <span id="blur-val" class="badge">15px</span>
+            </label>
+            <input type="range" id="blur-range" min="2" max="40" value="15" step="1">
+          </div>
+
+          <div class="stats-panel">
+            <div class="stat-item">
+              <span class="stat-label">Data Transferred:</span>
+              <span class="stat-value" id="data-transferred">0.00 MB</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Inference Hardware:</span>
+              <span class="stat-value" id="backend-status">Detecting...</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Performance:</span>
+              <span class="stat-value" id="fps-counter">0 FPS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h2>How It Works</h2>
+        <ol>
+          <li><strong>WASM Fileset Resolver:</strong> Downloads Google MediaPipe's WebAssembly vision runtime.</li>
+          <li><strong>Selfie Segmentation Model:</strong> Loads the local <code>selfie_segmenter.tflite</code> neural network running either on GPU or CPU fallback.</li>
+          <li><strong>Multi-pass Canvas Compositing:</strong> Uses the segmentation mask to composite the sharp person foreground over a Gaussian-blurred camera frame in real-time.</li>
+          <li><strong>Network Resource Tracking:</strong> Monitors Performance Resource Timing entries to calculate exact transfer volume in MB.</li>
+        </ol>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
